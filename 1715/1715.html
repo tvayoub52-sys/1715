@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1715</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #000000;
+            color: #00ff00;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px #00ff00;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff00; }
+            to { text-shadow: 0 0 30px #00ff00, 0 0 40px #00ff00; }
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            color: #00ff00;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            background: #111111;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            color: #00ff00;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .btn {
+            background: #000000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 500;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            background: #00ff00;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .chat-header {
+            background: #111111;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .chat-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .messages-container {
+            flex: 1;
+            background: #111111;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            max-height: 60vh;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #222222;
+            border-radius: 5px;
+            border-left: 3px solid #00ff00;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .username {
+            color: #00ff00;
+            font-weight: 500;
+        }
+        
+        .timestamp {
+            color: #888888;
+            font-size: 0.8rem;
+        }
+        
+        .message-content {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        
+        .message-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+            border: 1px solid #00ff00;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        
+        .error-message {
+            color: #ff4444;
+            font-style: italic;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 15px;
+            background: #111111;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            color: #00ff00;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .message-input:focus {
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        .file-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+        }
+        
+        .file-btn {
+            padding: 15px 20px;
+            background: #000000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .file-btn:hover {
+            background: #00ff00;
+            color: #000000;
+        }
+        
+        .send-btn {
+            padding: 15px 25px;
+            background: #000000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .send-btn:hover {
+            background: #00ff00;
+            color: #000000;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .back-btn:hover {
+            background: #00ff00;
+            color: #000000;
+        }
+        
+        .warning {
+            color: #ffaa00;
+            font-size: 0.9rem;
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #333333;
+            border-radius: 50%;
+            border-top-color: #00ff00;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .connected {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+        
+        .disconnected {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .info-content {
+            max-width: 600px;
+            text-align: left;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .info-content h2 {
+            color: #00ff00;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .info-content p {
+            margin-bottom: 1rem;
+            color: #cccccc;
+        }
+
+        .info-content ul {
+            margin-left: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .info-content li {
+            margin-bottom: 0.5rem;
+            color: #cccccc;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 100px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            margin: 5px 0;
+            display: none;
+        }
+        
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .chat-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .input-container {
+                flex-direction: column;
+            }
+            
+            .send-btn, .file-btn {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">
+        <span class="loading"></span> Connecting...
+    </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <!-- Landing Screen -->
+    <div class="screen active" id="landingScreen">
+        <div class="container">
+            <div class="logo">1715</div>
+            <div style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">SECURE ENCRYPTED CHAT</h2>
+                <p style="color: #cccccc; font-size: 1rem;">Anonymous • Encrypted • Secure</p>
+            </div>
+            <div>
+                <button class="btn" onclick="showScreen('usernameScreen')">START</button>
+                <button class="btn" onclick="showScreen('infoScreen')">INFO</button>
+            </div>
+            <div class="warning">⚠️ All messages and images are end-to-end encrypted</div>
+        </div>
+    </div>
+
+    <!-- Info Screen -->
+    <div class="screen" id="infoScreen">
+        <button class="back-btn" onclick="showScreen('landingScreen')">← BACK</button>
+        <div class="container">
+            <div class="logo">INFO</div>
+            <div class="info-content">
+                <h2>How It Works</h2>
+                <p><strong>1715</strong> is a secure, anonymous chat application that uses end-to-end encryption to protect your conversations and images.</p>
+                
+                <h2>Features</h2>
+                <ul>
+                    <li>🔐 <strong>End-to-End Encryption:</strong> All messages and images are encrypted using AES encryption</li>
+                    <li>👤 <strong>Anonymous:</strong> No registration required, just pick a username</li>
+                    <li>🔢 <strong>Channel-Based:</strong> Create or join channels using numbers</li>
+                    <li>🔑 <strong>Shared Keys:</strong> Only users with the correct key can decrypt messages</li>
+                    <li>⚡ <strong>Real-Time:</strong> Messages appear instantly across all connected devices</li>
+                    <li>📷 <strong>Image Sharing:</strong> Send encrypted images (JPG, PNG, GIF)</li>
+                </ul>
+
+                <h2>How to Use</h2>
+                <ul>
+                    <li>Choose a username (no registration needed)</li>
+                    <li>Enter a channel number (share this with others)</li>
+                    <li>Set an encryption key (everyone must use the same key)</li>
+                    <li>Start chatting and sharing images securely!</li>
+                </ul>
+
+                <h2>Security</h2>
+                <p>Your messages and images are encrypted on your device before being sent. Without the correct encryption key, content cannot be read by anyone - including us.</p>
+                
+                <p style="color: #ffaa00;"><strong>Important:</strong> Share the channel number and encryption key only with people you trust.</p>
+            </div>
+            <button class="btn" onclick="showScreen('landingScreen')">BACK TO HOME</button>
+        </div>
+    </div>
+   
+    <div class="screen" id="usernameScreen">
+        <div class="container">
+            <div class="logo">1715</div>
+            <div class="form-group">
+                <label for="usernameInput">Enter Username:</label>
+                <input type="text" id="usernameInput" placeholder="Your username..." maxlength="20">
+            </div>
+            <button class="btn" onclick="setUsername()">CONTINUE</button>
+            <div class="warning">⚠️ All messages and images are end-to-end encrypted</div>
+        </div>
+    </div>
+
+    
+    <div class="screen" id="channelScreen">
+        <button class="back-btn" onclick="goBack('usernameScreen')">← BACK</button>
+        <div class="container">
+            <div class="logo">SELECT CHANNEL</div>
+            <div class="form-group">
+                <label for="channelInput">Channel Number:</label>
+                <input type="text" id="channelInput" placeholder="e.g., 1337" maxlength="10">
+            </div>
+            <button class="btn" onclick="setChannel()">JOIN CHANNEL</button>
+            <div class="warning">Share this number with others to chat together</div>
+        </div>
+    </div>
+
+    
+    <div class="screen" id="keyScreen">
+        <button class="back-btn" onclick="goBack('channelScreen')">← BACK</button>
+        <div class="container">
+            <div class="logo">ENCRYPTION KEY</div>
+            <div class="form-group">
+                <label for="keyInput">Secret Key (Password):</label>
+                <input type="password" id="keyInput" placeholder="Enter encryption key...">
+            </div>
+            <button class="btn" onclick="setKey()">START CHATTING</button>
+            <div class="warning">Everyone in the channel must use the same key</div>
+        </div>
+    </div>
+
+    
+    <div class="screen" id="chatScreen">
+        <div class="container">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-info">
+                        <div class="info-item">
+                            <span class="status-dot"></span>
+                            <span>User: <strong id="displayUsername"></strong></span>
+                        </div>
+                        <div class="info-item">
+                            <span>Channel: <strong id="displayChannel"></strong></span>
+                        </div>
+                        <div class="info-item">
+                            <button class="btn" onclick="leaveChat()" style="padding: 5px 10px; font-size: 0.8rem;">LEAVE</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="messages-container" id="messagesContainer">
+                    <div class="message">
+                        <div class="message-header">
+                            <span class="username">SYSTEM</span>
+                            <span class="timestamp">Now</span>
+                        </div>
+                        <div class="message-content">Secure channel established. All messages and images are encrypted.</div>
+                    </div>
+                </div>
+                
+                <div class="input-container">
+                    <input type="text" class="message-input" id="messageInput" placeholder="Type your encrypted message..." maxlength="500">
+                    <div class="file-input-container">
+                        <input type="file" class="file-input" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
+                        <label for="imageInput" class="file-btn">📷 IMAGE</label>
+                    </div>
+                    <button class="send-btn" onclick="sendMessage()">SEND</button>
+                </div>
+                <img class="image-preview" id="imagePreview" onclick="clearImagePreview()">
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- CryptoJS for AES Encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <script>
+        // Firebase Configuration (Replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoCI_txnb2-bsKqcDKDnTV1rUZmspshsA",
+            authDomain: "project-4577557546650577602.firebaseapp.com",
+            projectId: "project-4577557546650577602",
+            storageBucket: "project-4577557546650577602.firebasestorage.app",
+            messagingSenderId: "445792464370",
+            appId: "1:445792464370:web:0cc1556a2a41174cb80f6b",
+            measurementId: "G-QN8Q19CZMQ"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Global variables
+        let currentUser = '';
+        let currentChannel = '';
+        let encryptionKey = '';
+        let messagesRef = null;
+        let isConnected = false;
+        let selectedImage = null;
+
+        // Connection monitoring
+        const connectedRef = database.ref('.info/connected');
+        connectedRef.on('value', (snapshot) => {
+            const connectionStatus = document.getElementById('connectionStatus');
+            if (snapshot.val() === true) {
+                isConnected = true;
+                connectionStatus.innerHTML = '🟢 Connected';
+                connectionStatus.className = 'connection-status connected';
+            } else {
+                isConnected = false;
+                connectionStatus.innerHTML = '🔴 Disconnected';
+                connectionStatus.className = 'connection-status disconnected';
+            }
+        });
+
+        // Screen navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goBack(screenId) {
+            showScreen(screenId);
+        }
+
+        // Username setup
+        function setUsername() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            if (username.length < 2) {
+                alert('Username must be at least 2 characters');
+                return;
+            }
+            currentUser = username;
+            showScreen('channelScreen');
+        }
+
+        // Channel setup
+        function setChannel() {
+            const channel = document.getElementById('channelInput').value.trim();
+            if (!channel) {
+                alert('Please enter a channel number');
+                return;
+            }
+            if (!/^\d+$/.test(channel)) {
+                alert('Channel must be a number');
+                return;
+            }
+            currentChannel = channel;
+            showScreen('keyScreen');
+        }
+
+        // Encryption key setup
+        function setKey() {
+            const key = document.getElementById('keyInput').value;
+            if (!key) {
+                alert('Please enter an encryption key');
+                return;
+            }
+            if (key.length < 4) {
+                alert('Encryption key must be at least 4 characters');
+                return;
+            }
+            encryptionKey = key;
+            initializeChat();
+        }
+
+        // Initialize chat
+        function initializeChat() {
+            document.getElementById('displayUsername').textContent = currentUser;
+            document.getElementById('displayChannel').textContent = currentChannel;
+            
+            // Clear previous messages
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = `
+                <div class="message">
+                    <div class="message-header">
+                        <span class="username">SYSTEM</span>
+                        <span class="timestamp">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                    <div class="message-content">🔐 Secure channel established. All messages and images are encrypted.</div>
+                </div>
+            `;
+
+            // Set up Firebase reference
+            messagesRef = database.ref(`channels/${currentChannel}/messages`);
+            
+            // Listen for new messages
+            messagesRef.on('child_added', (snapshot) => {
+                const messageData = snapshot.val();
+                displayMessage(messageData);
+            });
+
+            // Set up message input
+            const messageInput = document.getElementById('messageInput');
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            showScreen('chatScreen');
+            messageInput.focus();
+        }
+
+        // Handle image selection
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Check file size (limit to 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Image size must be less than 2MB');
+                event.target.value = '';
+                return;
+            }
+
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedImage = e.target.result;
+                const preview = document.getElementById('imagePreview');
+                preview.src = selectedImage;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Clear image preview
+        function clearImagePreview() {
+            selectedImage = null;
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageInput').value = '';
+        }
+
+        // Encrypt message or image
+        function encryptContent(content) {
+            try {
+                return CryptoJS.AES.encrypt(content, encryptionKey).toString();
+            } catch (error) {
+                console.error('Encryption error:', error);
+                return null;
+            }
+        }
+
+        // Decrypt message or image
+        function decryptContent(encryptedContent) {
+            try {
+                const bytes = CryptoJS.AES.decrypt(encryptedContent, encryptionKey);
+                const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+                return decrypted || null;
+            } catch (error) {
+                console.error('Decryption error:', error);
+                return null;
+            }
+        }
+
+        // Send message or image
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message && !selectedImage) return;
+            if (!isConnected) {
+                alert('Not connected to server. Please wait...');
+                return;
+            }
+
+            let messageData;
+
+            if (selectedImage) {
+                // Send image
+                const encryptedImage = encryptContent(selectedImage);
+                if (!encryptedImage) {
+                    alert('Failed to encrypt image');
+                    return;
+                }
+
+                messageData = {
+                    username: currentUser,
+                    message: encryptedImage,
+                    type: 'image',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+            } else {
+                // Send text message
+                const encryptedMessage = encryptContent(message);
+                if (!encryptedMessage) {
+                    alert('Failed to encrypt message');
+                    return;
+                }
+
+                messageData = {
+                    username: currentUser,
+                    message: encryptedMessage,
+                    type: 'text',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+            }
+
+            messagesRef.push(messageData)
+                .then(() => {
+                    messageInput.value = '';
+                    clearImagePreview();
+                })
+                .catch((error) => {
+                    console.error('Error sending message:', error);
+                    alert('Failed to send message. Please try again.');
+                });
+        }
+
+        // Display message
+        function displayMessage(messageData) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+
+            const timestamp = messageData.timestamp ? 
+                new Date(messageData.timestamp).toLocaleTimeString() : 
+                new Date().toLocaleTimeString();
+
+            let messageContent;
+            const decryptedContent = decryptContent(messageData.message);
+            
+            if (decryptedContent) {
+                if (messageData.type === 'image') {
+                    messageContent = `<img src="${decryptedContent}" class="message-image" onclick="openImageModal('${decryptedContent}')" alt="Encrypted image">`;
+                } else {
+                    messageContent = decryptedContent;
+                }
+            } else {
+                messageContent = '⚠️ Wrong decryption key - Cannot decrypt this content';
+                messageDiv.classList.add('error-message');
+            }
+
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span class="username">${messageData.username}</span>
+                    <span class="timestamp">${timestamp}</span>
+                </div>
+                <div class="message-content ${!decryptedContent ? 'error-message' : ''}">${messageContent}</div>
+            `;
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Image modal functions
+        function openImageModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = imageSrc;
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Leave chat
+        function leaveChat() {
+            if (confirm('Are you sure you want to leave the chat?')) {
+                if (messagesRef) {
+                    messagesRef.off();
+                }
+                currentUser = '';
+                currentChannel = '';
+                encryptionKey = '';
+                selectedImage = null;
+                
+                // Clear inputs
+                document.getElementById('usernameInput').value = '';
+                document.getElementById('channelInput').value = '';
+                document.getElementById('keyInput').value = '';
+                document.getElementById('messageInput').value = '';
+                clearImagePreview();
+                
+                showScreen('landingScreen');
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add enter key listeners
+            document.getElementById('usernameInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') setUsername();
+            });
+            
+            document.getElementById('channelInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') setChannel();
+            });
+            
+            document.getElementById('keyInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') setKey();
+            });
+        });
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && messagesRef) {
+                // Reconnect if needed
+                console.log('Page became visible, checking connection...');
+            }
+        });
+
+        // Handle beforeunload
+        window.addEventListener('beforeunload', () => {
+            if (messagesRef) {
+                messagesRef.off();
+            }
+        });
+
+        // Close modal when clicking outside image
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                closeImageModal();
+            }
+        });
+    </script>
+</body>
+</html>
